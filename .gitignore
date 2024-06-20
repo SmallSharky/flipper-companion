@@ -1,0 +1,6 @@
+.externalToolBuilders
+.mxproject
+.project
+.vscode
+build
+CMakePresets.json
