@@ -41,8 +41,8 @@ private:
     uint8_t _vcomState{0};
 
     DisplayInterface * _iface;
-    static const uint16_t _w{144};
-    static const uint16_t _h{168};
+    static const uint16_t _w{336};
+    static const uint16_t _h{536};
     std::array<uint8_t, ((_w * _h) / 8)> _buf;
 };
 }

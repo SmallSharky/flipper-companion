@@ -26,6 +26,9 @@
 
 #include "Device.hpp"
 
+
+#include <cstdio>
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -97,8 +100,8 @@ int main(void)
     MX_TIM1_Init();
     MX_SPI_Init();
 
-    auto &dev = app::Device::instance();
-    dev.display.clearWithSync();
+    // auto &dev = app::Device::instance();
+    // dev.display.clearWithSync();
     /* USER CODE BEGIN 2 */
 
     /* USER CODE END 2 */
@@ -145,8 +148,8 @@ void SystemClock_Config(void)
     RCC_OscInitStruct.HSEState = RCC_HSE_ON;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-    RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV4;
-    RCC_OscInitStruct.PLL.PLLN = 56;
+    RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV6;
+    RCC_OscInitStruct.PLL.PLLN = 85;
     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
     RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
     RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
@@ -167,14 +170,26 @@ void SystemClock_Config(void)
     {
         Error_Handler();
     }
-
+    __HAL_RCC_SPI1_CLK_ENABLE();
+    __HAL_RCC_SPI2_CLK_ENABLE();
     __HAL_RCC_SPI3_CLK_ENABLE();
-
     __HAL_RCC_GPIOB_CLK_ENABLE();
+    HAL_NVIC_SetPriorityGrouping(3);
 }
 
 /* USER CODE BEGIN 4 */
+extern "C" {
+int io_putchar(int ch) {
+    HAL_UART_Transmit(&hlpuart1, (const uint8_t*)&ch, 1, 10000);
+    return 0;
+}
 
+void HAL_SPI_ErrorCallback(SPI_HandleTypeDef * spi) {
+    printf("SPI ERROR 0x%lx\n", spi->ErrorCode);
+    app::Device::instance().inputSPIReceiveIT();
+}
+
+} // extern "C"
 /* USER CODE END 4 */
 
 /**

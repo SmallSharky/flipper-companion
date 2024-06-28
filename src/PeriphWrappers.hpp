@@ -2,11 +2,13 @@
 
 #include "hal.h"
 
+
 namespace app
 {
     struct SPI
     {
-        SPI_HandleTypeDef *spi;
+        // SPI_HandleTypeDef *spi;
+        SPI_TypeDef * spi;
         void write(const void *data, uint32_t size);
     };
 
@@ -17,5 +19,6 @@ namespace app
 
         void write(bool what);
         void toggle();
+        bool read();
     };
 }

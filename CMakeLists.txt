@@ -38,16 +38,18 @@ enable_language(C ASM)
 project(${CMAKE_PROJECT_NAME})
 message("Build type: " ${CMAKE_BUILD_TYPE})
 
+set(FIRMWARE_NAME firmware)
+
 # Create an executable object type
 add_executable(
-    ${CMAKE_PROJECT_NAME}
+    ${FIRMWARE_NAME}
     src/main.cpp
     src/gpio.c
     src/tasks.cpp
     src/usart.c
     src/spi.c
     src/tim.c
-    src/stm32g4xx_it.c
+    src/stm32g4xx_it.cpp
     src/stm32g4xx_hal_msp.c
     src/stm32g4xx_hal_timebase_tim.c
     src/sysmem.c
@@ -57,37 +59,40 @@ add_executable(
     src/DisplayInterface.cpp
     src/PeriphWrappers.cpp
     src/Device.cpp
+    src/ST7567_StateMachine.cpp
+    src/SSD1306.cpp
+    src/SH1106.cpp
 )
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
 
 # Link directories setup
-target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
+target_link_directories(${FIRMWARE_NAME} PRIVATE
     # Add user defined library search paths
 )
 
 # Add sources to executable
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+target_sources(${FIRMWARE_NAME} PRIVATE
     # Add user sources here
 )
 
 # Add include paths
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+target_include_directories(${FIRMWARE_NAME} PRIVATE
     # Add user defined include paths
 )
 
 # Add project symbols (macros)
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+target_compile_definitions(${FIRMWARE_NAME} PRIVATE
     # Add user defined symbols
 )
 
-target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
+target_compile_options(${FIRMWARE_NAME} PRIVATE
     -Wno-missing-field-initializers
 )
 
 # Add linked libraries
-target_link_libraries(${CMAKE_PROJECT_NAME}
+target_link_libraries(${FIRMWARE_NAME}
     stm32cubemx
 
     # Add user defined libraries
@@ -95,17 +100,17 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 
 
 add_custom_command(
-    TARGET ${CMAKE_PROJECT_NAME}
+    TARGET ${FIRMWARE_NAME}
     POST_BUILD
-    BYPRODUCTS ${CMAKE_PROJECT_NAME}.bin
-    DEPENDS ${CMAKE_PROJECT_NAME}
+    BYPRODUCTS ${FIRMWARE_NAME}.bin
+    DEPENDS ${FIRMWARE_NAME}
     COMMENT "generate .bin file"
-    COMMAND ${CMAKE_OBJCOPY} -O binary "$<TARGET_FILE:${CMAKE_PROJECT_NAME}>" "$<TARGET_FILE:${CMAKE_PROJECT_NAME}>.bin"
+    COMMAND ${CMAKE_OBJCOPY} -O binary "$<TARGET_FILE:${FIRMWARE_NAME}>" "$<TARGET_FILE:${FIRMWARE_NAME}>.bin"
     VERBATIM
 )
 
 add_custom_target(
-    flash-${CMAKE_PROJECT_NAME}
-    DEPENDS ${CMAKE_PROJECT_NAME}.bin
-    COMMAND st-flash --reset write  "$<TARGET_FILE:${CMAKE_PROJECT_NAME}>.bin" 0x08000000 
+    flash-${FIRMWARE_NAME}
+    DEPENDS ${FIRMWARE_NAME}.bin
+    COMMAND st-flash --reset write  "$<TARGET_FILE:${FIRMWARE_NAME}>.bin" 0x08000000 
 )

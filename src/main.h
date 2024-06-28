@@ -1,62 +1,15 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
-
-/* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __MAIN_H
 #define __MAIN_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-/* Includes ------------------------------------------------------------------*/
 #include "hal.h"
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
-
-/* USER CODE END ET */
-
-/* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
-
-/* USER CODE END EC */
-
-/* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
-
-/* USER CODE END EM */
-
-/* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
-/* USER CODE BEGIN EFP */
-
-/* USER CODE END EFP */
-
-/* Private defines -----------------------------------------------------------*/
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
 #define LPUART1_TX_Pin GPIO_PIN_2
@@ -71,20 +24,40 @@ void Error_Handler(void);
 #define T_SWO_Pin GPIO_PIN_3
 #define T_SWO_GPIO_Port GPIOB
 
-/* USER CODE BEGIN Private defines */
+#define INPUT_DISPLAY_SPI SPI1
 
-#define DISPLAY_SPI SPI3
-#define DISPLAY_CS_PORT GPIOB
-#define DISPLAY_CS_PIN GPIO_PIN_12
+#define INPUT_DISPLAY_MOSI_PORT GPIOB
+#define INPUT_DISPLAY_MOSI_PIN GPIO_PIN_5
+#define INPUT_DISPLAY_MISO_PORT GPIOB
+#define INPUT_DISPLAY_MISO_PIN GPIO_PIN_4
+#define INPUT_DISPLAY_SCK_PORT GPIOB
+#define INPUT_DISPLAY_SCK_PIN GPIO_PIN_3
+// #define DISPLAY_CS_PORT GPIOA
+// #define DISPLAY_CS_PIN GPIO_PIN_4
+#define INPUT_DISPLAY_CS_PORT GPIOA
+#define INPUT_DISPLAY_CS_PIN GPIO_PIN_9
+#define INPUT_DISPLAY_DI_PORT GPIOB
+#define INPUT_DISPLAY_DI_PIN GPIO_PIN_6
+#define INPUT_DISPLAY_RST_PORT GPIOB
+#define INPUT_DISPLAY_RST_PIN GPIO_PIN_9
+
+#define OUTPUT_DISPLAY_SPI SPI2
+
+#define OUTPUT_DISPLAY_MOSI_PORT GPIOB
+#define OUTPUT_DISPLAY_MOSI_PIN GPIO_PIN_15
+#define OUTPUT_DISPLAY_MISO_PORT GPIOB
+#define OUTPUT_DISPLAY_MISO_PIN GPIO_PIN_14
+#define OUTPUT_DISPLAY_SCK_PORT GPIOB
+#define OUTPUT_DISPLAY_SCK_PIN GPIO_PIN_13
+#define OUTPUT_DISPLAY_CS_PORT GPIOB
+#define OUTPUT_DISPLAY_CS_PIN GPIO_PIN_12
+#define OUTPUT_DISPLAY_DC_PORT GPIOB
+#define OUTPUT_DISPLAY_DC_PIN GPIO_PIN_11
+#define OUTPUT_DISPLAY_RST_PORT GPIOB
+#define OUTPUT_DISPLAY_RST_PIN GPIO_PIN_10
 
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
-
-
-
-
-
-/* USER CODE END Private defines */
 
 #ifdef __cplusplus
 }

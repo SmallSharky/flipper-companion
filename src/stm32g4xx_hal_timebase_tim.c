@@ -94,7 +94,9 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
         status = HAL_ERROR;
       }
     }
+    
   }
+  
 
  /* Return function status */
   return status;
