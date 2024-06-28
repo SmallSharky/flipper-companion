@@ -20,7 +20,6 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "usart.h"
-#include "spi.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -98,7 +97,6 @@ int main(void)
     MX_GPIO_Init();
     MX_LPUART1_UART_Init();
     MX_TIM1_Init();
-    MX_SPI_Init();
 
     // auto &dev = app::Device::instance();
     // dev.display.clearWithSync();

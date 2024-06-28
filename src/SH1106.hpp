@@ -19,7 +19,6 @@ namespace app
         }
 
         void init();
-        void blink();
         void refresh(const std::array<uint8_t, w * h / 8> &buf);
 
     private:

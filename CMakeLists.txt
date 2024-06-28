@@ -47,7 +47,6 @@ add_executable(
     src/gpio.c
     src/tasks.cpp
     src/usart.c
-    src/spi.c
     src/tim.c
     src/stm32g4xx_it.cpp
     src/stm32g4xx_hal_msp.c
@@ -55,8 +54,6 @@ add_executable(
     src/sysmem.c
     src/syscalls.c
     src/system_stm32g4xx.c
-    src/SharpMemLCD.cpp
-    src/DisplayInterface.cpp
     src/PeriphWrappers.cpp
     src/Device.cpp
     src/ST7567_StateMachine.cpp

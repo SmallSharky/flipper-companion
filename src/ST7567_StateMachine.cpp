@@ -51,16 +51,12 @@ namespace app
         {
             _processCMD(value);
         }
-        
-        if (_redrawState & 1 << 4) {
-            _updated = true;
-        }
     }
 
     void ST7567_StateMachine::_setPixel(uint8_t x, uint8_t y, bool value)
     {
-        size_t index = (y * W + x) >> 3; // >>3 means dividing by 8
-        uint8_t mask = 1 << (x & 0x07);  // x&0x07 means x%8
+        size_t index = (y * W + x) >> 3;
+        uint8_t mask = 1 << (x & 0x07);
         buffer[index] = (buffer[index] & ~mask) | (value ? mask : 0);
     }
 
@@ -117,7 +113,6 @@ namespace app
     {
         if (_redrawState & 1 << 4)
         {
-            
             _redrawState = 0;
             _column = 0;
             _page = 0;
@@ -137,25 +132,22 @@ namespace app
             _cmdState = CmdState::SET_BOOSTER;
             break;
         default:
-            if ((value | ST7567A_SET_START_LINE_MASK) == (ST7567A_SET_START_LINE | ST7567A_SET_START_LINE_MASK))
-            {
-                _startLine = value & ST7567A_SET_START_LINE_MASK;
-            }
-            else if ((value | ST7567A_PAGE_ADDR_MASK) == (ST7567A_PAGE_ADDR | ST7567A_PAGE_ADDR_MASK))
+            if ((value | ST7567A_PAGE_ADDR_MASK) == (ST7567A_PAGE_ADDR | ST7567A_PAGE_ADDR_MASK))
             {
                 _redrawState |= 1 << 0;
                 _page = value & ST7567A_PAGE_ADDR_MASK;
+                if (_redrawState&0b110 != 0b110) {
+                    _column = 0;
+                }
             }
             else if ((value & ~0x1f) == 0)
             {
                 if (value & 0x10)
                 {
-                    // _redrawState |= 1 << 1;
                     _column = (value << 4) | (_column & 0x0f);
                 }
                 else
                 {
-                    // _redrawState |= 1 << 2;
                     _column = (value & 0x0f) | (_column & 0xf0);
                 }
             }

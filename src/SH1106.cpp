@@ -68,9 +68,9 @@ namespace app
         _rst.write(false);
         _cs.write(true);
         _dc.write(true);
-        HAL_Delay(10);
+        HAL_Delay(1);
         _rst.write(true);
-        uint8_t vccstate = SH1106_SWITCHCAPVCC;
+        uint8_t vccstate = SH1106_EXTERNALVCC;
         _cs.write(false);
         _cmd(SH1106_DISPLAYOFF);                    // 0xAE
         _cmd(SH1106_SETDISPLAYCLOCKDIV);            // 0xD5
@@ -80,7 +80,6 @@ namespace app
         _cmd(SH1106_SETDISPLAYOFFSET);              // 0xD3
         _cmd(0x00);                                   // no offset
         _cmd(SH1106_SETSTARTLINE);
-        // _cmd(0x00);
         
         _cmd(SH1106_SETSTARTLINE | 0x0);            // line #0 0x40
         _cmd(SH1106_CHARGEPUMP);                    // 0x8D
@@ -88,8 +87,8 @@ namespace app
         { _cmd(0x10); }
         else 
         { _cmd(0x14); }
-        // _cmd(SH1106_MEMORYMODE);                    // 0x20
-        // _cmd(0x00);                                  // 0x0 act like ks0108
+        _cmd(SH1106_MEMORYMODE);                    // 0x20
+        _cmd(0x00);                                  // 0x0 act like ks0108
         _cmd(SH1106_SEGREMAP | 0x1);
         _cmd(SH1106_COMSCANDEC);
         _cmd(SH1106_SETCOMPINS);                    // 0xDA
@@ -106,50 +105,16 @@ namespace app
         { _cmd(0xF1); }
         _cmd(SH1106_SETVCOMDETECT);                 // 0xDB
         _cmd(0x40);
+        _cmd(SH1106_DEACTIVATE_SCROLL);
         _cmd(SH1106_DISPLAYALLON_RESUME);           // 0xA4
         _cmd(SH1106_NORMALDISPLAY);                 // 0xA6
         _cmd(SH1106_DISPLAYON);
-        // _cmd(0xae); /* display off */
-        // _cmd(0xd5);
-        // _cmd(0x80); /* clock divide ratio (0x00=1) and oscillator frequency (0x8) */
-        // _cmd(0xa8);
-        // _cmd(0x3f); /* multiplex ratio */
-        // _cmd(0xd3);
-        // _cmd(0x00); /* display offset */
-        // _cmd(0x40); /* set display start line to 0 */
-        // _cmd(0x8d);
-        // _cmd(0x14); /* [2] charge pump setting (p62): 0x014 enable, 0x010 disable, SH1106 only, should be removed for SH1106 */
-        // _cmd(0x20);
-        // _cmd(0x00); /* horizontal addressing mode */
-
-        // _cmd(0xa1); /* segment remap a0/a1*/
-        // _cmd(0xc8); /* c0: scan dir normal, c8: reverse */
-        // // Flipmode
-        // // _cmd(0xa0),				/* segment remap a0/a1*/
-        // // _cmd(0xc0),				/* c0: scan dir normal, c8: reverse */
-
-        // _cmd(0xda);
-        // _cmd(0x12); /* com pin HW config, sequential com pin config (bit 4), disable left/right remap (bit 5) */
-
-        // _cmd(0x81);
-        // _cmd(0xcf); /* [2] set contrast control */
-        // _cmd(0xd9);
-        // _cmd(0xf1); /* [2] pre-charge period 0x022/f1*/
-        // _cmd(0xdb);
-        // _cmd(0x40); /* vcomh deselect level */
-        // // if vcomh is 0, then this will give the biggest range for contrast control issue #98
-        // // restored the old values for the noname constructor, because vcomh=0 will not work for all OLEDs, #116
-
-        // _cmd(0x2e); /* Deactivate scroll */
-        // _cmd(0xa4); /* output ram to display */
-        // _cmd(0xa6); /* none inverted normal display mode */
         _cs.write(true);
     }
 
     void SH1106::refresh(const std::array<uint8_t, w * h / 8> &buf)
     {
         _cs.write(false);
-        uint8_t tmp[w];
         for(size_t page = 0; page<(h>>3); ++page) {
             
             _cmd(0x02);
@@ -160,12 +125,4 @@ namespace app
         }
         _cs.write(true);
     }
-
-    // void SH1106::blink() {
-    //     _cs.toggle();
-    //     _dc.toggle();
-    //     _rst.toggle();
-    //     uint8_t data = 0b10101010;
-    //     _spi.write(&data, 1);
-    // }
 }

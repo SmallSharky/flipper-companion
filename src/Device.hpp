@@ -1,7 +1,6 @@
 #pragma once
 
 #include <functional>
-#include "SharpMemLCD.hpp"
 #include "PeriphWrappers.hpp"
 #include "RingBuffer.hpp"
 #include "SH1106.hpp"
@@ -22,7 +21,6 @@ private:
     _PImpl & _impl;
 public:
 
-    // SharpMemLCD display;
     GPIO led;
     GPIO button;
     SH1106 display;

@@ -3,7 +3,6 @@
 #include "Device.hpp"
 
 extern TIM_HandleTypeDef htim2;
-extern void unlockRxTask();
 extern "C"
 {
 
@@ -64,49 +63,7 @@ extern "C"
 
     void SPI1_IRQHandler(void)
     {
-        // auto spi = DISPLAY_SPI;
-        auto &dev = app::Device::instance();
-
-        // app::DispRxFrame tmp;
-
-        // while (LL_SPI_IsActiveFlag_RXNE(spi) && dev.displayRxBuf.isSpaceAvailable())
-        // {
-            
-            
-        //     tmp.data = LL_SPI_ReceiveData8(spi);
-        //     tmp.isCommand = LL_GPIO_IsInputPinSet(DISPLAY_DI_PORT, DISPLAY_DI_PIN) == 0;
-        //     std::swap(dev.displayRxBuf.new_back(), tmp);
-        //     // tmp.isCommand = LL_GPIO_IsInputPinSet(DISPLAY_DI_PORT, DISPLAY_DI_PIN) == 0; //(_impl.inputSPI_DI.port->IDR & (1 << _impl.inputSPI_DI.pin))==0;
-        //     // tmp.chipSelect = HAL_GPIO_ReadPin(_impl.inputSPI_CS.port, _impl.inputSPI_CS.pin) == GPIO_PIN_SET;
-        //     // tmp.reset = HAL_GPIO_ReadPin(_impl.inputSPI_RST.port, _impl.inputSPI_RST.pin) == GPIO_PIN_SET;
-        //     // tmp.data = LL_SPI_ReceiveData8(spi);
-        //     // if (dev.displayRxBuf.isSpaceAvailable())
-        //     // {
-        //     // dev.displayRxBuf.push(tmp);
-        //     // }
-
-        // } //while (LL_SPI_IsActiveFlag_RXNE(spi));
-
-        // if (LL_SPI_IsActiveFlag_OVR(spi))
-        // {
-        //     LL_SPI_ClearFlag_OVR(spi);
-        // }
-        // unlockRxTask();
-        dev.handleInterruptInputSPI();
-    }
-    void EXTI4_IRQHandler(void)
-    {
-        if (!LL_GPIO_IsInputPinSet(INPUT_DISPLAY_CS_PORT, INPUT_DISPLAY_CS_PIN))
-        {
-            LL_SPI_Enable(INPUT_DISPLAY_SPI);
-        }
-        else
-        {
-            LL_SPI_Disable(INPUT_DISPLAY_SPI);
-        }
-        LL_EXTI_ClearFlag_0_31(INPUT_DISPLAY_CS_PIN);
-        // HAL_GPIO_EXTI_IRQHandler(B1_Pin);
-        // app::Device::instance().handleInterruptInputSPI_CS();
+        app::Device::instance().handleInterruptInputSPI();
     }
 
     void EXTI9_5_IRQHandler(void)
@@ -117,7 +74,6 @@ extern "C"
             LL_SPI_Disable(INPUT_DISPLAY_SPI);
         }
         LL_EXTI_ClearFlag_0_31(INPUT_DISPLAY_CS_PIN);
-        // app::Device::instance().handleInterruptInputSPI_CS();
     }
 
     void EXTI15_10_IRQHandler(void)

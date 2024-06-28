@@ -37,72 +37,33 @@ void MX_FREERTOS_Init(void)
 }
 
 void unlockRxTask() {
-    // printf("Unlock\n");
-    // osSignalSet(defaultTaskThreadId, 0);
     auto res = osThreadFlagsSet(defaultTaskThreadId, 1);
     if (res != 1) {
         printf("Unlock status %lu\n", res);
     }
-    // printf("Unlock status %lu\n", res);
-
-    // BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    // vTaskNotifyGiveFromISR( defaultTaskHandle, &xHigherPriorityTaskWoken );
 }
 
 void StartDefaultTask([[maybe_unused]] void *argument)
 {
-    // defaultTaskHandle = xTaskGetCurrentTaskHandle();
     auto &dev = app::Device::instance();
     dev.registerRxCallback(unlockRxTask);
     printf("GUI initialized\n");
     osThreadFlagsClear(1);
-    // size_t i = 0;
-    // bool dataSent{false};
+    bool displayUpdated{false};
     for (;;)
     {
-        auto res = osThreadFlagsWait(1, osFlagsWaitAny, 100);
-
-        // osSignalWait(0, 1000);
-        // 
-        // uint32_t res = 1;
-        // uint32_t ulNotificationValue = ulTaskNotifyTake(pdFALSE, xMaxBlockTime);
-        // printf("Unlocked\n");
+        osThreadFlagsWait(1, osFlagsWaitAny, 100);
         
-        // if (ulNotificationValue == 1)
-        // {
-        
-        while(!dev.displayRxBuf.empty()) {
-
+        while(dev.displayRxBuf.size()) {
             maxRxBufUsage = std::max(dev.displayRxBuf.size(), maxRxBufUsage);
-            // dataSent = true;
-            // if (i>=8) {
-            //     // printf("\n");
-            //     i = 0;
-            // }
-
             auto tmp = dev.displayRxBuf.pop();
-            // printf("%02x ", tmp.data);
-            // ++i;
             dispStateMachine.process(reinterpret_cast<uint8_t*>(&tmp)[0], reinterpret_cast<uint8_t*>(&tmp)[1]);
-            // if(tmp.isCommand) {
-            //     printf("\nCMD[%02x] ", tmp.data);
-            // } else {
-            //     printf("%02x ", tmp.data);
-            // }
-            
+            displayUpdated = true;
         }
-        // if(res != 1 && dataSent) {
-        //     dataSent = false;
-        //     printf("\n\n\n\n\n");
-        // }
-            /* The transmission ended as expected. */
-        // }
-        // else
-        // {
-        //     /* The call to ulTaskNotifyTake() timed out. */
-        // }
-        // dev.led.toggle();
-        // osDelay(50);
+        if(displayUpdated) {
+            osThreadFlagsSet(displayTaskThreadId, 1);
+            displayUpdated = false;
+        }
     }
 }
 
@@ -110,17 +71,14 @@ void StartDisplayTask([[maybe_unused]] void *argument)
 {
     auto& dev = app::Device::instance();
     for(;;) {
-        
-        
-        if(dispStateMachine.updated()) {
-            dispStateMachine.clearUpdated();
-            dev.display.refresh(dispStateMachine.buffer);            
+        auto res = osThreadFlagsWait(1, osFlagsWaitAny, 100);
+        if (res == 1) {
+            dev.display.refresh(dispStateMachine.buffer);
         }
-        if(dev.button.read()) {            
+        if(dev.button.read()) {     
+            printf("Max RX buf usage: %u\n", maxRxBufUsage);       
             dispStateMachine.display();
         }     
-   // printf("Max RX buf usage: %u\n", maxRxBufUsage);
         dev.led.toggle();
-        osDelay(100);
     }
 }
