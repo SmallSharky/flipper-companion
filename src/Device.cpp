@@ -94,7 +94,7 @@ namespace app
             HAL_NVIC_SetPriority(SPI1_IRQn, 5, 5);
             NVIC_EnableIRQ(SPI1_IRQn);
 
-            HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 6);
+            HAL_NVIC_SetPriority(EXTI9_5_IRQn, 6, 6);
             HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
         }
 
